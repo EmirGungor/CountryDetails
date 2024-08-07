@@ -37,7 +37,7 @@ function renderCountry(data){
  
     let html = `
         <div class="card-header">
-            Arama Sonucu
+            Search Results
         </div>
         <div class="card-body">
             <div class="row">
