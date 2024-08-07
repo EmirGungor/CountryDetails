@@ -49,7 +49,7 @@ function renderCountry(data){
                     <hr>
                     <div class="row">
                         <div class="col-4">Population:</div>
-                        <div class="col-8">${(data.population /1000000).toFixed(1)}</div>
+                        <div class="col-8">${(data.population /1000000).toFixed(1)}M</div>
                     </div>
                     <div class="row">
                         <div class="col-4">Language</div>
