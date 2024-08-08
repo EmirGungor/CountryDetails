@@ -11,30 +11,27 @@ document.getElementById("txtSearch").addEventListener("keydown", function(event)
         getCountry(text);
     });
 
-    function getCountry(country) {
-        fetch('https://restcountries.com/v3.1/name/' + country)
-            .then((response) => {
+   async function getCountry(country) {
+            try{
+                const response = await fetch('https://restcountries.com/v3.1/name/' + country);
                 if(!response.ok)
-                    throw new Error("ülke bulunamadı");
-                return response.json()
-            })
-           
-               
-            .then((data) => {
+                    throw new Error("Country not found.");
+                const data = await response.json();
                 renderCountry(data[0]);
+        
                 const countries = data[0].borders;
-
                 if(!countries)
-                throw new Error("No neighboring countries.")
-                return fetch('https://restcountries.com/v3.1/alpha?codes=' + countries.toString() )
-            })
-            .then(response => response.json())
-          
-            .then((data) => renderNeighbors(data))
-            .catch(err => renderError(err));
-            
-               
+                    throw new Error("No neighboring countries.")
+                const response2 = await fetch('https://restcountries.com/v3.1/alpha?codes=' + countries.toString());
+                const neighbors = await response2.json()
+        
+                renderNeighbors(neighbors)
+            }
+            catch(err){
+                renderError(err);
         }
+
+     }
 
 
     function renderCountry(data){
