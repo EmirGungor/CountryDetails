@@ -1,4 +1,4 @@
-document.getElementById("txtSearch").addEventListener("keydown", function(event) {
+ document.getElementById("txtSearch").addEventListener("keydown", function(event) {
                 if (event.key === "Enter") {
                     document.getElementById("btnSearch").click();
                 }
@@ -7,11 +7,44 @@ document.getElementById("txtSearch").addEventListener("keydown", function(event)
     document.querySelector("#btnSearch").addEventListener("click",()=>{
         let text = document.querySelector("#txtSearch").value;
         document.querySelector("#details").style.opacity =0;
+        document.querySelector("#loading").style.display = "block"
 
         getCountry(text);
     });
 
-   async function getCountry(country) {
+    document.querySelector("#btnLocation").addEventListener("click", () => {
+        if(navigator.geolocation){
+            document.querySelector("#loading").style.display = "block"
+            navigator.geolocation.getCurrentPosition(onSuccess, onError)
+        }
+    }) ;
+
+    function onError(err){
+        console.log(err);
+        document.querySelector("#loading").style.display = "none"
+
+    }
+
+    async function onSuccess(position){
+        let lat = position.coords.latitude;
+        let lng = position.coords.longitude;
+        
+        //api, google, opencagedata
+        const api_key = "41d11b38d88c486881a556c46a7cbced ";
+        const url = `https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lng}&key=${api_key}`;
+ 
+        const response = await fetch(url);
+        const data = await response.json();
+
+        const country = data.results[0].components.country;
+
+        document.querySelector("#txtSearch").value = country;
+        document.querySelector("#btnSearch").click();
+
+
+    }
+
+    async function getCountry(country) {
             try{
                 const response = await fetch('https://restcountries.com/v3.1/name/' + country);
                 if(!response.ok)
@@ -35,6 +68,7 @@ document.getElementById("txtSearch").addEventListener("keydown", function(event)
 
 
     function renderCountry(data){
+        document.querySelector("#loading").style.display = "none"
         document.querySelector("#country-details").innerHTML=""
         document.querySelector("#neighbors").innerHTML=""
     
@@ -90,6 +124,8 @@ document.getElementById("txtSearch").addEventListener("keydown", function(event)
 
 
     function renderError(err){
+        document.querySelector("#loading").style.display = "none"
+
         const html = `
             <div class="alert-danger">
                 ${err.message}    
